@@ -1,4 +1,3 @@
-![LibJWT Logo](https://user-images.githubusercontent.com/320303/33439880-82406da4-d5bc-11e7-8959-6d53553c1984.png)
 
 # amdevtok - Apple Music Developer Token creation utility based on JWT C Library
 A simple command line program amdevtok to generate Apple Music Developer Token. Based on JWT C Library by Ben Collins.
