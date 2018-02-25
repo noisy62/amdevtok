@@ -55,7 +55,7 @@ To print payload:<br>
     ./amdevtokd /path/to/my.p8 ABC123DEFG DEF123GHIJ<br>
 <br>
 Example output:<br>
-#./amdevtok<font color="red">d</font> ./AuthKey_ABC123DEFG.p8 ABC123DEFG DEF123GHIJ<br>
+#./amdevtok<B>d</B> ./AuthKey_ABC123DEFG.p8 ABC123DEFG DEF123GHIJ<br>
 {<br>
 &nbsp;&nbsp;&nbsp;&nbsp;"alg": "ES256",<br>
 &nbsp;&nbsp;&nbsp;&nbsp;"kid": "ABC123DEFG"<br>
