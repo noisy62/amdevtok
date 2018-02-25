@@ -52,7 +52,9 @@ amdevtok will just print result, amdevtokd will also print the original payload.
 
 ## How to use amdevtok
 amdevtok is static linked and can be copied anywhere has openssl/GnuTLS support. Usage is very straight foward.<br>
-1. Have your private key(.p8 file), kid and team id ready; 2. execute amdevtok; 3. Copy the results and go.<br>
+1. Have your private key(.p8 file), kid and team id ready; 
+2. execute amdevtok; 
+3. Copy the results and go.<br>
 <br>
 Usage: amdevtok private_key kid teamid [exp-length-in-seconds]<br>
 <br>
