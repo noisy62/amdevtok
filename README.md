@@ -41,31 +41,31 @@ amdevtok will just print result, amdevtokd will also print the original payload.
 
 ## How to use amdevtok
 amdevtok is static linked and can be copied anywhere has openssl/GnuTLS support. Usage is very straight foward. 
-Have your private key(.p8 file), kid and team id ready, execute amdevtok. Copy the results and go.
-
-- Command line sytax:
-
-  amdevtok private_key kid teamid [exp-length-in-seconds]
-
-- By default, expiration is plus 90 days:
-  ./amdevtok /path/to/my.p8 ABC123DEFG DEF123GHIJ
-
-- Add 4th optional parameter to specify expiration period, eg. Expire in 1 hour:
-    ./amdevtok /path/to/my.p8 ABC123DEFG DEF123GHIJ 3600
-    
-- To print payload:
-    ./amdevtokd /path/to/my.p8 ABC123DEFG DEF123GHIJ
-
+Have your private key(.p8 file), kid and team id ready, execute amdevtok. Copy the results and go.<br>
+<br>
+- Command line sytax:<br>
+<br>
+  amdevtok private_key kid teamid [exp-length-in-seconds]<br>
+<br>
+- By default, expiration is plus 90 days:<br>
+  ./amdevtok /path/to/my.p8 ABC123DEFG DEF123GHIJ<br>
+<br>
+- Add 4th optional parameter to specify expiration period, eg. Expire in 1 hour:<br>
+    ./amdevtok /path/to/my.p8 ABC123DEFG DEF123GHIJ 3600<br>
+<br>
+- To print payload:<br>
+    ./amdevtokd /path/to/my.p8 ABC123DEFG DEF123GHIJ<br>
+<br>
 - Example output:<br>
 #./amdevtokd ./AuthKey_ABC123DEFG.p8 ABC123DEFG DEF123GHIJ<br>
 {<br>
-    "alg": "ES256",<br>
-    "kid": "ABC123DEFG"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"alg": "ES256",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"kid": "ABC123DEFG"<br>
 }<br>
 <br>
 {<br>
-    "exp": 1527368388,<br>
-    "iat": 1519592388,<br>
-    "iss": "DEF123GHIJ"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"exp": 1527368388,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"iat": 1519592388,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"iss": "DEF123GHIJ"<br>
 }<br>
 ewogICAgImFsasdfasdfasdfCAia2lkIjogasdfasdfiCn0K.CnsKICAgICJleHAiOasdfasdfasdfImlhdCI6IDE1MTfasdfasdfXNzIjogIkRFRjEyasdfaISUoiCn0K.61234124asdfffCU0KWgc0vmOPgENzb3sasdfasdfnfasdfzCl1IohAA<br>
