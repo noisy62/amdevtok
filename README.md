@@ -45,7 +45,8 @@ Because amdevtok add non-standard function to the original libjwt source, it is 
 files, so there is no need to make install to install libjwt libraries into system.
 
 3. Compile amdevtok
-- sh make-amdevtok
+- ``sh make-amdevtok``
+
 This will compile amdevtok binary and create a symbol link amdevtokd, please note the trailing 'd'.
 amdevtok will just print result, amdevtokd will also print the original payload.
 
