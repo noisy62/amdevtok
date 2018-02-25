@@ -22,6 +22,7 @@ A simple command line program amdevtok to generate Apple Music Developer Token. 
 - libtool
 - jansson
 - jansson-devel
+- openssl
 - openssl-devel
 - check
 - check-devel
