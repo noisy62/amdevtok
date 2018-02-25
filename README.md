@@ -27,12 +27,11 @@
 - patch -p1 < ./amdevtok.diff
 
 2. Compile libjwt
-- 2.1 **With GNU Make:** Use ``autoreconf -i`` to create project files and run ``./configure``.
-- 2.2 ``make all``: build library.
-- 2.3 ``make check``: build and run test suite. (Optional)
-- See INSTALL file for more details on GNU Auto tools and GNU Make.
-- Use the ``--without-openssl`` with ``./configure`` to use GnuTLS.
-Please note because amdevtok add non-standard function to the original libjwt source, it is staticly linked to libjwt object
+- 2.1 **With GNU Make:** Use ``autoreconf -i`` to create project files 
+- 2.2 ``./configure``.
+- 2.3 ``make all``: build library.
+
+Because amdevtok add non-standard function to the original libjwt source, it is staticly linked to libjwt object
 files, so there is no need to make install to install libjwt libraries into system.
 
 3. Compile amdevtok
@@ -44,20 +43,20 @@ amdevtok will just print result, amdevtokd will also print the original payload.
 amdevtok is static linked and can be copied anywhere has openssl/GnuTLS support. Usage is very straight foward. 
 Have your private key(.p8 file), kid and team id ready, execute amdevtok. Copy the results and go.
 
-Command line sytax:
+- Command line sytax:
 
   amdevtok private_key kid teamid [exp-length-in-seconds]
 
-By default, expiration is plus 90 days:
+- By default, expiration is plus 90 days:
   ./amdevtok /path/to/my.p8 ABC123DEFG DEF123GHIJ
 
-Add 4th optional parameter to specify expiration period, eg. Expire in 1 hour:
+- Add 4th optional parameter to specify expiration period, eg. Expire in 1 hour:
     ./amdevtok /path/to/my.p8 ABC123DEFG DEF123GHIJ 3600
     
-To print payload:
+- To print payload:
     ./amdevtokd /path/to/my.p8 ABC123DEFG DEF123GHIJ
 
-Example output:
+- Example output:
 #./amdevtokd ./AuthKey_ABC123DEFG.p8 ABC123DEFG DEF123GHIJ
 {
     "alg": "ES256",
