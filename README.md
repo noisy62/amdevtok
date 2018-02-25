@@ -46,13 +46,13 @@ Have your private key(.p8 file), kid and team id ready, execute amdevtok. Copy t
 Usage: amdevtok private_key kid teamid [exp-length-in-seconds]<br>
 <br>
 By default, expiration is plus 90 days:<br>
-  ./amdevtok /path/to/my.p8 ABC123DEFG DEF123GHIJ<br>
+&nbsp;&nbsp;./amdevtok /path/to/my.p8 ABC123DEFG DEF123GHIJ<br>
 <br>
 Add 4th optional parameter to specify expiration period, eg. Expire in 1 hour:<br>
-    ./amdevtok /path/to/my.p8 ABC123DEFG DEF123GHIJ 3600<br>
+&nbsp;&nbsp;./amdevtok /path/to/my.p8 ABC123DEFG DEF123GHIJ 3600<br>
 <br>
 To print payload:<br>
-    ./amdevtokd /path/to/my.p8 ABC123DEFG DEF123GHIJ<br>
+&nbsp;&nbsp;./amdevtok<B>d</B> /path/to/my.p8 ABC123DEFG DEF123GHIJ<br>
 <br>
 Example output:<br>
 #./amdevtok<B>d</B> ./AuthKey_ABC123DEFG.p8 ABC123DEFG DEF123GHIJ<br>
