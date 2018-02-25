@@ -51,7 +51,7 @@ This will compile amdevtok binary and create a symbol link amdevtokd, please not
 amdevtok will just print result, amdevtokd will also print the original payload.
 
 ## How to use amdevtok
-amdevtok is static linked and can be copied anywhere has openssl/GnuTLS support. Usage is very straightfoward.<br>
+amdevtok is static linked and can be copied anywhere has openssl/GnuTLS and jansson support. Usage is very straightfoward.<br>
 1. Have your private key(.p8 file), kid and team id ready; 
 2. execute amdevtok; 
 3. Copy the results and go.<br>
