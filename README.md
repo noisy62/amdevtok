@@ -47,12 +47,12 @@ files, so there is no need to make install to install libjwt libraries into syst
 3. Compile amdevtok
 - ``sh make-amdevtok``
 
-This will compile amdevtok binary and create a symbol link amdevtokd, please note the trailing 'd'.
+This will compile amdevtok binary and create a symbol link amdevtokd, please note the trailing 'd'.<br>
 amdevtok will just print result, amdevtokd will also print the original payload.
 
 ## How to use amdevtok
-amdevtok is static linked and can be copied anywhere has openssl/GnuTLS support. Usage is very straight foward. 
-Have your private key(.p8 file), kid and team id ready, execute amdevtok. Copy the results and go.<br>
+amdevtok is static linked and can be copied anywhere has openssl/GnuTLS support. Usage is very straight foward.<br>
+1. Have your private key(.p8 file), kid and team id ready; 2. execute amdevtok; 3. Copy the results and go.<br>
 <br>
 Usage: amdevtok private_key kid teamid [exp-length-in-seconds]<br>
 <br>
