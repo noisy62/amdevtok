@@ -1,0 +1,321 @@
+--- libjwt/include/jwt.h	2018-02-25 20:42:28.000000000 +0000
++++ amdevtok/include/jwt.h	2018-02-25 19:53:31.000000000 +0000
+@@ -382,6 +382,8 @@
+  */
+ JWT_EXPORT char *jwt_encode_str(jwt_t *jwt);
+ 
++JWT_EXPORT char *jwt_encode_str_am(jwt_t *jwt, const char *kid, int print_payload);
++
+ /** @} */
+ 
+ /**
+--- libjwt/libjwt/jwt.c	2018-02-25 20:42:28.000000000 +0000
++++ amdevtok/libjwt/jwt.c	2018-02-25 20:22:28.000000000 +0000
+@@ -732,6 +732,53 @@
+ 	return 0;
+ }
+ 
++/* Write header for Apple Music Developer Token
++ * {
++ *   "alg": "ES256",
++ *   "kid": "ABC123DEFG"
++ * }
++ */
++static int jwt_write_head_am(const char *kid, char **buf, int pretty)
++{
++    APPEND_STR(buf, "{");
++
++    if (pretty)
++        APPEND_STR(buf, "\n");
++
++    if (pretty)
++        APPEND_STR(buf, "    ");
++
++    APPEND_STR(buf, "\"alg\":");
++    if (pretty)
++        APPEND_STR(buf, " ");
++
++    APPEND_STR(buf, "\"ES256\",");
++
++    if (pretty)
++        APPEND_STR(buf, "\n");
++
++    if (pretty)
++        APPEND_STR(buf, "    ");
++
++    APPEND_STR(buf, "\"kid\":");
++    if (pretty)
++        APPEND_STR(buf, " ");
++    
++    APPEND_STR(buf, "\"");
++    APPEND_STR(buf, kid);
++    APPEND_STR(buf, "\"");
++
++    if (pretty)
++        APPEND_STR(buf, "\n");
++
++    APPEND_STR(buf, "}");
++
++    if (pretty)
++        APPEND_STR(buf, "\n");
++
++    return 0;
++}
++
+ static int jwt_write_body(jwt_t *jwt, char **buf, int pretty)
+ {
+ 	/* Sort keys for repeatability */
+@@ -900,6 +947,113 @@
+ 	return ret;
+ }
+ 
++static int jwt_encode_am(jwt_t *jwt, char **out, const char *kid, int print_payload)
++{
++    char *buf = NULL, *head, *body, *sig;
++    int ret, head_len, body_len;
++    unsigned int sig_len;
++
++    /* First the header. */
++    ret = jwt_write_head_am (kid , &buf, 1);
++    if (ret) {
++        if (buf)
++            free(buf);
++        return ret;
++    }
++    
++    if ( print_payload ){
++//    printf("--------- header ---------\n");
++    printf("%s",buf);
++//    printf("--------------------------\n");
++    }
++    
++    head = alloca(strlen(buf) * 2);
++    if (head == NULL) {
++        free(buf);
++        return ENOMEM;
++    }
++
++    jwt_Base64encode(head, buf, strlen(buf));
++    head_len = strlen(head);
++
++    free(buf);
++    buf = NULL;
++
++    /* Now the body. */
++    ret = jwt_write_body(jwt, &buf, 1);
++    if (ret) {
++        if (buf)
++            free(buf);
++        return ret;
++    }
++    
++    if ( print_payload ){
++//    printf("----------- body ---------\n");
++    printf("%s",buf);
++//    printf("--------------------------\n");
++    }
++    
++    body = alloca(strlen(buf) * 2);
++    if (body == NULL) {
++        free(buf);
++        return ENOMEM;
++    }
++
++    jwt_Base64encode(body, buf, strlen(buf));
++    body_len = strlen(body);
++
++    free(buf);
++    buf = NULL;
++
++    jwt_base64uri_encode(head);
++    jwt_base64uri_encode(body);
++
++    /* Allocate enough to reuse as b64 buffer. */
++    buf = malloc(head_len + body_len + 2);
++    if (buf == NULL)
++        return ENOMEM;
++    strcpy(buf, head);
++    strcat(buf, ".");
++    strcat(buf, body);
++
++    ret = __append_str(out, buf);
++    if (ret == 0)
++        ret = __append_str(out, ".");
++    if (ret) {
++        if (buf)
++            free(buf);
++        return ret;
++    }
++
++    if (jwt->alg == JWT_ALG_NONE) {
++        free(buf);
++        return 0;
++    }
++
++    /* Now the signature. */
++    ret = jwt_sign(jwt, &sig, &sig_len, buf);
++    free(buf);
++
++    if (ret)
++        return ret;
++
++    buf = malloc(sig_len * 2);
++    if (buf == NULL) {
++        free(sig);
++        return ENOMEM;
++    }
++
++    jwt_Base64encode(buf, sig, sig_len);
++
++    free(sig);
++
++    jwt_base64uri_encode(buf);
++    ret = __append_str(out, buf);
++    free(buf);
++
++    return ret;
++}
++
+ int jwt_encode_fp(jwt_t *jwt, FILE *fp)
+ {
+ 	char *str = NULL;
+@@ -931,3 +1085,17 @@
+ 
+ 	return str;
+ }
++
++char *jwt_encode_str_am(jwt_t *jwt, const char *kid, int print_payload)
++{
++    char *str = NULL;
++
++    errno = jwt_encode_am(jwt, &str , kid, print_payload);
++    if (errno) {
++        if (str)
++            free(str);
++        str = NULL;
++    }
++
++    return str;
++}
+--- libjwt/amdevtok.c	1970-01-01 00:00:00.000000000 +0000
++++ amdevtok/amdevtok.c	2018-02-25 20:22:49.000000000 +0000
+@@ -0,0 +1,110 @@
++/* Public domain, no copyright. Use at your own risk. */
++
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <errno.h>
++#include <time.h>
++
++#include <jwt.h>
++
++static unsigned char key[16384];
++static size_t key_len;
++
++static int read_key(const char *key_file)
++{
++	FILE *fp = fopen(key_file, "r");
++    
++    if ( ! fp ){
++        return 1;
++    }
++    
++	key_len = fread(key, 1, sizeof(key), fp);
++
++	fclose(fp);
++
++	key[key_len] = '\0';
++ 
++    return 0;
++}
++
++static int apple_music_developer_token(const char *private_key, const char *kid, const char *teamid, unsigned long exp_period , int print_payload)
++{
++    jwt_t *jwt = NULL;
++    int ret = 0;
++    char *out;
++    time_t iat = time(NULL);
++    unsigned long exp = iat;
++    
++    // default plus 90 days
++    if ( exp_period > 0 ){
++        exp += exp_period;
++    }else{
++        exp += 90*24*60*60;
++    }
++    
++    if ( (ret = jwt_new ( &jwt )) ){
++        fprintf ( stderr, "can not alloc jwt.\n");
++        return ret;
++    }
++    
++    if ( (ret = read_key(private_key)) ){
++        fprintf ( stderr, "can not open private_key to read.\n");
++        jwt_free(jwt);
++        return ret;
++    }
++    
++    if ( (ret = jwt_add_grant(jwt, "iss" , teamid)) ){
++        fprintf ( stderr, "can not add teamid.\n");
++        jwt_free(jwt);
++        return ret;
++    }
++
++    if ( (ret = jwt_add_grant_int(jwt, "iat" , (unsigned long)iat)) ){
++        fprintf ( stderr, "can not add iat.\n");
++        jwt_free(jwt);
++        return ret;
++    }
++    
++    if ( (ret = jwt_add_grant_int(jwt, "exp" , exp)) ){
++        fprintf ( stderr, "can not add exp.\n");
++        jwt_free(jwt);
++        return ret;
++    }
++    
++    if ( (ret = jwt_set_alg(jwt, JWT_ALG_ES256 , key , key_len)) ){
++        fprintf ( stderr, "can not set alg.\n");
++        jwt_free(jwt);
++        return ret;
++    }
++    
++    out = jwt_encode_str_am(jwt,kid,print_payload);
++
++    printf("%s\n",out);
++    
++    free(out);
++    jwt_free(jwt);
++    
++    return 0;
++}
++
++
++int main(int argc, char *argv[])
++{
++    if ( argc < 4){
++        printf("Usage: amdevtok private_key kid teamid [exp-length-in-seconds]\n");
++        printf("  By default, expiration is plus 90 days:\n");
++        printf("    ./amdevtok private_key kid teamid\n");
++        printf("  Expire in 1 hour:\n");
++        printf("    ./amdevtok private_key kid teamid 3600\n");
++        printf("  To print payload:\n");
++        printf("    ./amdevtokd private_key kid teamid\n");
++        return 1;
++    }
++    
++    int print_payload = ( argv[0][strlen(argv[0])-1] == 'd' ) ? 1 : 0;
++
++    unsigned long exp_period = ( argc > 4 && argv[4] ) ? atol(argv[4]) : 0;
++
++    return apple_music_developer_token ( argv[1] , argv[2] , argv[3] , exp_period , print_payload);
++}
+--- libjwt/make-amdevtok	1970-01-01 00:00:00.000000000 +0000
++++ amdevtok/make-amdevtok	2018-02-25 20:00:01.000000000 +0000
+@@ -0,0 +1,6 @@
++#!/bin/sh
++gcc -DHAVE_CONFIG_H -I. -I./libjwt  -I./include  -Wall -pthread -D_GNU_SOURCE -g -O2 -c -o amdevtok.o amdevtok.c
++gcc -Wall -pthread -D_GNU_SOURCE -g -O2 -o ./amdevtok amdevtok.o ./libjwt/libjwt_la-base64.o ./libjwt/libjwt_la-jwt.o ./libjwt/libjwt_la-jwt-openssl.o -ljansson -lssl -lcrypto -pthread -Wl,-rpath
++if [ ! -h amdevtokd ]; then
++  ln -s amdevtok amdevtokd
++fi
