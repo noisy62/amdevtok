@@ -14,7 +14,8 @@
 ## Documentation
 
 [GitHub Pages](http://benmcollins.github.io/libjwt/)
-[Apple Music Developer Token] (https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/AppleMusicWebServicesReference/SetUpWebServices.html)
+
+[Apple Music Developer Token](https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/AppleMusicWebServicesReference/SetUpWebServices.html)
 
 ## Pre-built Ubuntu Packages (PPA)
 
