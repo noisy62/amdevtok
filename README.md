@@ -56,16 +56,16 @@ Have your private key(.p8 file), kid and team id ready, execute amdevtok. Copy t
 - To print payload:
     ./amdevtokd /path/to/my.p8 ABC123DEFG DEF123GHIJ
 
-- Example output:
-#./amdevtokd ./AuthKey_ABC123DEFG.p8 ABC123DEFG DEF123GHIJ
-{
-    "alg": "ES256",
-    "kid": "ABC123DEFG"
-}
-
-{
-    "exp": 1527368388,
-    "iat": 1519592388,
-    "iss": "DEF123GHIJ"
-}
-ewogICAgImFsasdfasdfasdfCAia2lkIjogasdfasdfiCn0K.CnsKICAgICJleHAiOasdfasdfasdfImlhdCI6IDE1MTfasdfasdfXNzIjogIkRFRjEyasdfaISUoiCn0K.61234124asdfffCU0KWgc0vmOPgENzb3sasdfasdfnfasdfzCl1IohAA
+- Example output:<br>
+#./amdevtokd ./AuthKey_ABC123DEFG.p8 ABC123DEFG DEF123GHIJ<br>
+{<br>
+    "alg": "ES256",<br>
+    "kid": "ABC123DEFG"<br>
+}<br>
+<br>
+{<br>
+    "exp": 1527368388,<br>
+    "iat": 1519592388,<br>
+    "iss": "DEF123GHIJ"<br>
+}<br>
+ewogICAgImFsasdfasdfasdfCAia2lkIjogasdfasdfiCn0K.CnsKICAgICJleHAiOasdfasdfasdfImlhdCI6IDE1MTfasdfasdfXNzIjogIkRFRjEyasdfaISUoiCn0K.61234124asdfffCU0KWgc0vmOPgENzb3sasdfasdfnfasdfzCl1IohAA<br>
