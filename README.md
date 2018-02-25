@@ -17,9 +17,19 @@
 
 [Apple Music Developer Token](https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/AppleMusicWebServicesReference/SetUpWebServices.html)
 
-## Pre-built Ubuntu Packages (PPA)
+## Prerequisite
 
-`sudo add-apt-repository ppa:ben-collins/libjwt`
+- cmake
+- autoconf
+- autoreconf
+- automake
+- libtool
+- jansson
+- jansson-devel
+- openssl-devel
+- check
+- check-devel
+- patch
 
 ## Build Instructions
 
