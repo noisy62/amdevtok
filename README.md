@@ -61,7 +61,7 @@ By default, expiration is plus 90 days:<br>
 Add 4th optional parameter to specify expiration period, eg. Expire in 1 hour:<br>
 &nbsp;&nbsp;./amdevtok /path/to/my.p8 ABC123DEFG DEF123GHIJ 3600<br>
 <br>
-To print decoded payload as long as encoded message, use ``amdevtokd`` instead of ``amdevtok``:<br>
+To print decoded payload as long as encoded message, use `amdevtokd` instead of `amdevtok`:<br>
 &nbsp;&nbsp;./amdevtok<B>d</B> /path/to/my.p8 ABC123DEFG DEF123GHIJ<br>
 <br>
 Example output:<br>
