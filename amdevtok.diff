@@ -1,4 +1,4 @@
---- libjwt/include/jwt.h	2018-02-25 20:42:28.000000000 +0000
+--- libjwt/include/jwt.h	2018-02-26 15:53:20.000000000 +0000
 +++ amdevtok/include/jwt.h	2018-02-25 19:53:31.000000000 +0000
 @@ -382,6 +382,8 @@
   */
@@ -9,7 +9,7 @@
  /** @} */
  
  /**
---- libjwt/libjwt/jwt.c	2018-02-25 20:42:28.000000000 +0000
+--- libjwt/libjwt/jwt.c	2018-02-26 15:53:20.000000000 +0000
 +++ amdevtok/libjwt/jwt.c	2018-02-25 20:22:28.000000000 +0000
 @@ -732,6 +732,53 @@
  	return 0;
@@ -198,8 +198,8 @@
 +    return str;
 +}
 --- libjwt/amdevtok.c	1970-01-01 00:00:00.000000000 +0000
-+++ amdevtok/amdevtok.c	2018-02-25 20:22:49.000000000 +0000
-@@ -0,0 +1,110 @@
++++ amdevtok/amdevtok.c	2018-02-26 15:52:00.000000000 +0000
+@@ -0,0 +1,145 @@
 +/* Public domain, no copyright. Use at your own risk. */
 +
 +#include <stdio.h>
@@ -207,6 +207,7 @@
 +#include <string.h>
 +#include <errno.h>
 +#include <time.h>
++#include <ctype.h>
 +
 +#include <jwt.h>
 +
@@ -304,9 +305,43 @@
 +        return 1;
 +    }
 +    
++    // check kid
++    if ( strlen(argv[2]) != 10 ){
++        fprintf ( stderr , "Invalid kid. Should be 10 alphanumeric characters.\n");
++        return 1;
++    }
++    int i;
++    for ( i=0; i<strlen(argv[2]); i++ ){
++        if ( ! isalnum(argv[2][i]) ){
++            fprintf ( stderr , "Invalid kid. Should be 10 alphanumeric characters.\n");
++            return 1;
++        }
++    }
++    
++    // check teamid
++    if ( strlen(argv[3]) != 10 ){
++        fprintf ( stderr , "Invalid teamid. Should be 10 alphanumeric characters.\n");
++        return 1;
++    }
++    for ( i=0; i<strlen(argv[3]); i++ ){
++        if ( ! isalnum(argv[3][i]) ){
++            fprintf ( stderr , "Invalid teamid. Should be 10 alphanumeric characters.\n");
++            return 1;
++        }
++    }
++
 +    int print_payload = ( argv[0][strlen(argv[0])-1] == 'd' ) ? 1 : 0;
 +
-+    unsigned long exp_period = ( argc > 4 && argv[4] ) ? atol(argv[4]) : 0;
++    unsigned long exp_period = 0;
++    if ( argc > 4 && argv[4] ){
++        long tmp = atol(argv[4]);
++        if ( tmp <= 0 || tmp > 15552000){
++            fprintf ( stderr , "Invalid exp-length-in-seconds. Should be positive number, Max 15552000(6 months).\n");
++            return 1;
++        }else{
++            exp_period = tmp;
++        }
++    }
 +
 +    return apple_music_developer_token ( argv[1] , argv[2] , argv[3] , exp_period , print_payload);
 +}
